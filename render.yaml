@@ -1,0 +1,17 @@
+services:
+  - type: worker
+    name: sandmc-bot
+    runtime: node
+    buildCommand: npm install
+    startCommand: node index.js
+    envVars:
+      - key: DISCORD_TOKEN
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: STATUS_CHANNEL_ID
+        sync: false
+      - key: MC_HOST
+        sync: false
+      - key: MC_PORT
+        sync: false
