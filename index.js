@@ -47,10 +47,13 @@ const client = new Client({
 });
 
 // ====== Groq AI ======
-const openai = new OpenAI({
-  apiKey:   process.env.GROQ_API_KEY || '',
-  baseURL:  'https://api.groq.com/openai/v1',
-});
+let openai = null;
+if (process.env.GROQ_API_KEY) {
+  openai = new OpenAI({
+    apiKey:  process.env.GROQ_API_KEY,
+    baseURL: 'https://api.groq.com/openai/v1',
+  });
+}
 
 const conversationHistory = new Map();
 let latencyHistory = [];
@@ -138,6 +141,7 @@ async function sendPeriodicUpdate() {
 
 // ====== الذكاء الاصطناعي ======
 async function askAI(userId, username, userMessage) {
+  if (!openai) return 'عذراً، خدمة الذكاء الاصطناعي غير مفعّلة حالياً. تواصل مع المشرف.';
   if (!conversationHistory.has(userId)) conversationHistory.set(userId, []);
   const history = conversationHistory.get(userId);
   history.push({ role: 'user', content: userMessage });
