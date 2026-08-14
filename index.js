@@ -714,8 +714,12 @@ client.on('interactionCreate', async (interaction) => {
 
 // ====== تسجيل Slash Commands ======
 async function registerSlashCommands() {
-  if (!CONFIG.clientId || !CONFIG.token) {
-    console.warn('[slash] CLIENT_ID أو TOKEN غير موجود — تم تخطي تسجيل الأوامر');
+  // استخلاص CLIENT_ID من التوكن تلقائياً لو مو موجود
+  const resolvedClientId = CONFIG.clientId ||
+    Buffer.from(CONFIG.token.split('.')[0], 'base64').toString('utf8');
+
+  if (!resolvedClientId || !CONFIG.token) {
+    console.warn('[slash] لا يوجد TOKEN — تم تخطي تسجيل الأوامر');
     return;
   }
   const commands = [
@@ -805,7 +809,7 @@ async function registerSlashCommands() {
 
   const rest = new REST({ version: '10' }).setToken(CONFIG.token);
   try {
-    await rest.put(Routes.applicationCommands(CONFIG.clientId), { body: commands });
+    await rest.put(Routes.applicationCommands(resolvedClientId), { body: commands });
     console.log(`✅ تم تسجيل ${commands.length} Slash Command`);
   } catch (e) {
     console.error('[slash-register]', e.message);
@@ -813,7 +817,7 @@ async function registerSlashCommands() {
 }
 
 // ====== الإقلاع ======
-client.once('ready', async () => {
+client.once('clientReady', async () => {
   console.log(`✅ البوت متصل: ${client.user.tag}`);
   client.user.setActivity('مراقبة SandMC | /help', { type: 3 });
   await registerSlashCommands();
