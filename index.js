@@ -35,14 +35,16 @@ const CONFIG = {
   historySize:      60,
 };
 
+// ملاحظة: MessageContent و GuildMembers هي Privileged Intents
+// لازم تفعّلها في: Discord Developer Portal → Bot → Privileged Gateway Intents
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.MessageContent,       // ← Privileged (فعّلها في Portal)
+    GatewayIntentBits.GuildMembers,         // ← Privileged (فعّلها في Portal)
     GatewayIntentBits.GuildMessageReactions,
-    GatewayIntentBits.GuildPresences,
+    // GuildPresences حُذف — مو ضروري
   ],
 });
 
