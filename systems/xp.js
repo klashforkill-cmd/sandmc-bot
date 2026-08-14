@@ -1,7 +1,17 @@
 // ====== نظام الـ XP والمستويات (بناءً على الرسائل) ======
 import { EmbedBuilder, AttachmentBuilder } from 'discord.js';
-import { createCanvas, loadImage } from 'canvas';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+
+// dynamic canvas import مع fallback
+let createCanvas, loadImage;
+try {
+  const canvasLib = await import('canvas');
+  createCanvas = canvasLib.createCanvas;
+  loadImage    = canvasLib.loadImage;
+} catch {
+  createCanvas = null;
+  loadImage    = null;
+}
 
 const XP_PATH    = './data/xp.json';
 const XP_CFG     = './data/xp_config.json';
@@ -38,6 +48,7 @@ function calcLevel(totalXp) {
 
 // رسم بطاقة الرانك
 async function renderRankCard(username, avatarUrl, level, xpInLevel, xpNeeded, rank, totalUsers) {
+  if (!createCanvas) throw new Error('canvas not available');
   const W = 900, H = 220;
   const canvas = createCanvas(W, H);
   const ctx = canvas.getContext('2d');

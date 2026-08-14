@@ -1,7 +1,17 @@
 // ====== نظام الترحيب والوداع ======
 import { EmbedBuilder, AttachmentBuilder } from 'discord.js';
-import { createCanvas, loadImage } from 'canvas';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+
+// dynamic canvas import مع fallback
+let createCanvas, loadImage;
+try {
+  const canvasLib = await import('canvas');
+  createCanvas = canvasLib.createCanvas;
+  loadImage    = canvasLib.loadImage;
+} catch {
+  createCanvas = null;
+  loadImage    = null;
+}
 
 const CONFIG_PATH = './data/welcome_config.json';
 
@@ -21,6 +31,7 @@ function getGuildConfig(guildId) {
 
 // رسم بطاقة الترحيب
 async function renderWelcomeCard(username, avatarUrl, memberCount, isWelcome = true) {
+  if (!createCanvas) throw new Error('canvas not available');
   const W = 900, H = 300;
   const canvas = createCanvas(W, H);
   const ctx = canvas.getContext('2d');

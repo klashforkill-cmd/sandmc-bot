@@ -1,0 +1,23 @@
+[phases.setup]
+nixPkgs = [
+  "fontconfig",
+  "freetype",
+  "cairo",
+  "pango",
+  "libjpeg",
+  "libpng",
+  "giflib",
+  "librsvg",
+  "pixman",
+  "pkg-config",
+  "fontconfig.dev",
+  "freetype.dev",
+  "cairo.dev",
+  "pango.dev",
+]
+
+[phases.build]
+cmds = ["npm install", "npm rebuild canvas --build-from-source || true"]
+
+[start]
+cmd = "node index.js"

@@ -130,7 +130,16 @@ function getLevelProgress(balance) {
 }
 
 
-import { createCanvas, loadImage } from 'canvas';
+// dynamic import للـ canvas مع fallback
+let createCanvas, loadImage;
+try {
+  const canvasLib = await import('canvas');
+  createCanvas = canvasLib.createCanvas;
+  loadImage    = canvasLib.loadImage;
+} catch {
+  createCanvas = null;
+  loadImage    = null;
+}
 import https from 'https';
 
 // جلب صورة من URL كـ Buffer
